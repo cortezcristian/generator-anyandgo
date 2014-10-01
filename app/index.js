@@ -7,6 +7,17 @@ var chalk = require('chalk');
 
 
 var AnyandgoGenerator = yeoman.generators.Base.extend({
+  constructor: function() {
+    yeoman.generators.Base.apply(this, arguments);
+    //this.log(yosay('Installing Express!'));
+    /*
+    this.composeWith('express:app', { options: {
+        type: 'Basic',
+        viewEngine: 'Jade',
+        database: 'MongoDB'
+    }});
+    */
+  },
   init: function () {
     this.pkg = require('../package.json');
 
@@ -38,16 +49,22 @@ var AnyandgoGenerator = yeoman.generators.Base.extend({
   },
 
   app: function () {
-    this.mkdir('app');
-    this.mkdir('app/templates');
-
-    this.copy('_package.json', 'package.json');
-    this.copy('_bower.json', 'bower.json');
+    var y = this;
+    this.invoke('express', { options : { basic: true, viewEngine: "jade" } }, function(){
+        y.log(yosay('Override files!'));
+    });
+    
   },
 
   projectfiles: function () {
     this.copy('editorconfig', '.editorconfig');
     this.copy('jshintrc', '.jshintrc');
+    this.mkdir('models');
+    this.mkdir('tests');
+    this.mkdir('tests/unit');
+    this.copy('_package.json', 'package.json');
+    this.copy('_bower.json', 'bower.json');
+    this.copy('_Gruntfile.js', 'Gruntfile.js'); 
   }
 });
 
